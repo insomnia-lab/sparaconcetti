@@ -11,6 +11,7 @@ import pyglet
 imgdir = 'imgs'
 img_random_prob = 2
 next_timeout = 3
+textdir='txt'
 ###
 
 last_manual_click = 0
@@ -21,8 +22,11 @@ def read_textfile(fname):
         return filter(lambda s: s,
                     map(lambda s: s.strip(), fp.read().decode("utf8").split("\n"))
                     )
-listabene = read_textfile('vero.txt')
-listamale = read_textfile('falso.txt')
+
+#testi_fnames = [os.path.join(textdir, fname) for fname in os.listdir(textdir)]
+#testi =[read_textfile(fname) for fname in testi_fnames]
+listabene=read_textfile("testimisti.txt")
+listamale=read_textfile("short.txt")
 def get_img(fname):
     if fname not in get_img.cache:
         get_img.cache[fname] = pyglet.image.load(fname)
@@ -41,14 +45,14 @@ window.labels = [
                 ]
 
 def documento():
-    concept=random.choice(listabene)
+    concept=random.choice(random.choice([listabene,listamale]))
     document=pyglet.text.decode_attributed(concept)
     document.set_style(0,len(concept), dict(font_name='Impact', font_size=window.height/10))
     document.set_style(0,len(concept),{"color":(255,255,255,255)})
+#    document.set_style(0,len(concept),{"background_color":(100,255,255,255)})
     document.set_paragraph_style(0,10,{"align":"center","wrap":True})
-    return pyglet.text.layout.TextLayout(document,width=window.width,height=window.height-100,
-                                        multiline=True)
-
+    laiaut=pyglet.text.layout
+    return laiaut.TextLayout(document,width=window.width,height=window.height-100,multiline=True)
 
 
 def label():
@@ -62,6 +66,7 @@ def label():
 
 # @window.event
 def on_draw():
+    pyglet.gl.glClearColor(random.random(),random.random(),random.random(),100)
     window.clear()
     documento().anchor_y='bottom'
     if random.randint(0, img_random_prob) > 0:
@@ -80,6 +85,7 @@ def on_draw():
         #          y=(window.height - img.height)/2)
         sprite.draw()
 
+pyglet.gl.glClearColor(1,0.5,0.5,1)
 @window.event
 def on_key_press(symbol, modifiers):
     global last_manual_click
