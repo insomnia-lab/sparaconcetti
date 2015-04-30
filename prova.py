@@ -1,5 +1,9 @@
+from __future__ import print_function
+import sys
+import time
+import random
+
 import pyglet
-import random, time
 
 window = pyglet.window.Window( resizable=True)
 fp=open("testo.txt",'r')
@@ -52,8 +56,11 @@ def on_draw():
 
 @window.event
 def on_key_press(symbol, modifiers):
-    print 'A key was pressed'
     on_draw()
+    print(symbol)
+    if symbol in (ord('q'), ord('Q')):
+        sys.exit(0)
+    return True
 
 @window.event
 def on_resize(widht,height):
