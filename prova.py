@@ -15,14 +15,16 @@ next_timeout = 3
 
 last_manual_click = 0
 window = pyglet.window.Window(fullscreen=True)
-fp=open("testo.txt",'r')
 
-lista=filter(lambda s: s,
-             map(lambda s: s.strip(), fp.read().decode("utf8").split("\n"))
-             )
+def read_textfile(fname):
+    with open(fname) as fp:
+        return filter(lambda s: s,
+                    map(lambda s: s.strip(), fp.read().decode("utf8").split("\n"))
+                    )
+listabene = read_textfile('vero.txt')
+listamale = read_textfile('falso.txt')
 def get_img(fname):
     if fname not in get_img.cache:
-        print('eseguo rainbow')
         get_img.cache[fname] = pyglet.image.load(fname)
     return get_img.cache[fname]
 get_img.cache = {}
@@ -39,7 +41,7 @@ window.labels = [
                 ]
 
 def documento():
-    concept=random.choice(lista)
+    concept=random.choice(listabene)
     document=pyglet.text.decode_attributed(concept)
     document.set_style(0,len(concept), dict(font_name='Impact', font_size=window.height/10))
     document.set_style(0,len(concept),{"color":(255,255,255,255)})
@@ -51,7 +53,7 @@ def documento():
 
 def label():
     #document=pyglet.text.document.FormattedDocument()
-       return  pyglet.text.Label(random.choice(lista),
+       return  pyglet.text.Label(random.choice(listabene),
                           font_name='Courier',
                           font_size=16,
                           color=(10,10,100,255),
