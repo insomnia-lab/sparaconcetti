@@ -10,12 +10,13 @@ fp=open("testo.txt",'r')
 
 lista=fp.read().decode("utf8").split("\n")
 def rainbow():
-	return pyglet.image.load("rainbow-stalin.gif")
+    if rainbow.cached is None:
+        print('eseguo rainbow')
+        rainbow.cached = pyglet.image.load("rainbow-stalin.gif")
+    return rainbow.cached
+rainbow.cached = None
+rainbow()  # this is just to cache
 
-rainbow().height=window.height
-rainbow().width=window.width
-rainbow().anchor_y=window.height//2
-rainbow().anchor_x=window.width//2
 
 
 #lista=['ciao','come','Ar byte macht fried']
