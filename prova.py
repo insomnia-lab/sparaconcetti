@@ -5,7 +5,7 @@ import random
 
 import pyglet
 
-window = pyglet.window.Window( resizable=True)
+window = pyglet.window.Window(fullscreen=True)
 fp=open("testo.txt",'r')
 
 lista=fp.read().decode("utf8").split("\n")
