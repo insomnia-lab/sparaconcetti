@@ -23,17 +23,16 @@ rainbow()  # this is just to cache
 window.labels = [
             pyglet.text.Label('window', x=10, y=100, anchor_y='bottom',
                               color=(0, 0, 0, 255))
-				]
+                ]
 
 def documento():
-    	concept=random.choice(lista)
-    	document=pyglet.text.decode_attributed(concept)
-	document.set_style(0,len(concept), dict(font_name='Impact', font_size=window.height/10))
-	document.set_style(0,len(concept),{"color":(255,255,255,255),
-							})
-	document.set_paragraph_style(0,10,{"align":"center","wrap":True})
-	return pyglet.text.layout.TextLayout(document,width=window.width,height=window.height-100,
-										multiline=True)
+    concept=random.choice(lista)
+    document=pyglet.text.decode_attributed(concept)
+    document.set_style(0,len(concept), dict(font_name='Impact', font_size=window.height/10))
+    document.set_style(0,len(concept),{"color":(255,255,255,255)})
+    document.set_paragraph_style(0,10,{"align":"center","wrap":True})
+    return pyglet.text.layout.TextLayout(document,width=window.width,height=window.height-100,
+                                        multiline=True)
 
 
 
@@ -48,12 +47,14 @@ def label():
 
 @window.event
 def on_draw():
-	window.clear()
-	documento().anchor_y='bottom'
-	if (random.choice([False,True])==True) :
-		documento().draw()
-	else:
-		rainbow().blit(x=(window.width-rainbow().width)/2,y=0)
+    window.clear()
+    documento().anchor_y='bottom'
+    print('prima di caricare', time.time())
+    if random.randint(0,10) > 0:
+        documento().draw()
+    else:
+        rainbow().blit(x=(window.width - rainbow().width)/2,y=0)
+    print('dopo che caricare', time.time())
 
 @window.event
 def on_key_press(symbol, modifiers):
@@ -65,14 +66,13 @@ def on_key_press(symbol, modifiers):
 
 @window.event
 def on_resize(widht,height):
-	print "bella!"
-	on_draw()
-	#rainbow().height=window.height
-	#rainbow().width=window.width
+    on_draw()
+    #rainbow().height=window.height
+    #rainbow().width=window.width
 
 def callback(dt):
     return on_draw()
 
-pyglet.clock.schedule_interval(callback,3)
+#pyglet.clock.schedule_interval(callback,3)
 
 pyglet.app.run()
