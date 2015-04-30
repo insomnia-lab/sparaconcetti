@@ -1,25 +1,38 @@
 from __future__ import print_function
+import os
 import sys
 import time
 import random
 
 import pyglet
 
+
+### CONF
+imgdir = 'imgs'
+img_random_prob = 2
+next_timeout = 3
+###
+
+last_manual_click = 0
 window = pyglet.window.Window(fullscreen=True)
 fp=open("testo.txt",'r')
 
-lista=fp.read().decode("utf8").split("\n")
-def rainbow():
-    if rainbow.cached is None:
+lista=filter(lambda s: s,
+             map(lambda s: s.strip(), fp.read().decode("utf8").split("\n"))
+             )
+def get_img(fname):
+    if fname not in get_img.cache:
         print('eseguo rainbow')
-        rainbow.cached = pyglet.image.load("rainbow-stalin.gif")
-    return rainbow.cached
-rainbow.cached = None
-rainbow()  # this is just to cache
+        get_img.cache[fname] = pyglet.image.load(fname)
+    return get_img.cache[fname]
+get_img.cache = {}
+img_fnames = [os.path.join(imgdir, fname) for fname in os.listdir(imgdir)]
+def get_random_img():
+    return get_img(random.choice(img_fnames))
+for fname in img_fnames:
+    get_img(fname)
 
 
-
-#lista=['ciao','come','Ar byte macht fried']
 window.labels = [
             pyglet.text.Label('window', x=10, y=100, anchor_y='bottom',
                               color=(0, 0, 0, 255))
@@ -45,22 +58,32 @@ def label():
                           x=window.width//2, y=window.height//2,
                           anchor_x='center', anchor_y='center')
 
-@window.event
+# @window.event
 def on_draw():
     window.clear()
     documento().anchor_y='bottom'
-    print('prima di caricare', time.time())
-    if random.randint(0,10) > 0:
+    if random.randint(0, img_random_prob) > 0:
         documento().draw()
     else:
-        rainbow().blit(x=(window.width - rainbow().width)/2,y=0)
-    print('dopo che caricare', time.time())
+        img = get_random_img()
+        sprite = pyglet.sprite.Sprite(img)
+        #sprite.x = (window.width - img.width)/2
+        #sprite.y = (window.height - img.height)/2
+        sprite.scale = min(float(window.width) / img.width,
+                           float(window.height) / img.height)
+        sprite.x = (window.width - img.width*sprite.scale)/2
+        sprite.y = (window.height - img.height*sprite.scale)/2
+
+        # img.blit(x=(window.width - img.width)/2,
+        #          y=(window.height - img.height)/2)
+        sprite.draw()
 
 @window.event
 def on_key_press(symbol, modifiers):
+    global last_manual_click
     on_draw()
-    print(symbol)
-    if symbol in (ord('q'), ord('Q')):
+    last_manual_click = time.time()
+    if symbol in map(ord,('q', 'Q')):
         sys.exit(0)
     return True
 
@@ -71,8 +94,14 @@ def on_resize(widht,height):
     #rainbow().width=window.width
 
 def callback(dt):
-    return on_draw()
+    global last_manual_click
+    now = time.time()
+    print('DIFF', now, last_manual_click, now - last_manual_click)
+    if (now - last_manual_click) > next_timeout:
+        on_draw()
+    else:
+        print('no, skip')
 
-#pyglet.clock.schedule_interval(callback,3)
+pyglet.clock.schedule_interval(callback, next_timeout)
 
 pyglet.app.run()
