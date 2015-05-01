@@ -66,7 +66,10 @@ def label():
 
 # @window.event
 def on_draw():
-    pyglet.gl.glClearColor(random.random(),random.random(),random.random(),100)
+    pyglet.gl.glClearColor(random.random()/2,
+                           random.random()/2,
+                           random.random()/2,
+                           100)
     window.clear()
     documento().anchor_y='bottom'
     if random.randint(0, img_random_prob) > 0:
